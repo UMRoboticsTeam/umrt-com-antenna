@@ -18,8 +18,6 @@ trickling down). Each new project must:
 
 ---
 # Project Name
-
-This library/executable/project implements XYZ functionality for the University of Manitoba Robotics Team's 
-rover/robotic arm.
+This library implements the automatic antenna controls for the University of Manitoba Robotics Team's automatic rotating antenna. This allows the antenna to automatically follow the rover as it moves around, allowing the rover to have the best signal strength possible at all times
 
 [See the documentation](https://umroboticsteam.github.io/********** project-name **********/)

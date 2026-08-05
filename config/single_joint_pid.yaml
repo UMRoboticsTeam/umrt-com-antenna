@@ -1,0 +1,25 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+
+    joint_pid_controller:
+      type: pid_controller/PidController
+
+joint_pid_controller:
+  ros__parameters:
+    dof_names:
+      - main_actuator_joint
+
+    reference_and_state_interfaces:
+      - position
+    
+    command_interface: velocity
+
+    gains:
+      main_actuator_joint:
+        p: 15.0
+        i: 0.5
+        d: 1.2
+        i_clamp_upper: 2.0
+        i_clamp_lower: -2.0
+        antiwindup: true
