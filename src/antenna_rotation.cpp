@@ -135,21 +135,21 @@ class AntennaPID : public rclcpp::Node
             sub_bs =  this->create_subscription<std_msgs::msg::Float64>(
                 "antenna_override",
                 10,
-                std::bind(&AntennaController::bs_callback, this, std::placeholders::_1),
+                std::bind(&AntennaPID::bs_callback, this, std::placeholders::_1),
                 sub_options
             );
             
             sub_antenna_pos = this->create_subscription<sensor_msgs::msg::NavSatFix>(
                 "/pid",
                 10,
-                std::bind(&AntennaController::new_antenna_pos_callback, this, std::placeholders::_1),
+                std::bind(&AntennaPID::new_antenna_pos_callback, this, std::placeholders::_1),
                 sub_options
             );
             
             sub_rover_pos = this->create_subscription<sensor_msgs::msg::NavSatFix>(
                 "/pid",
                 10,
-                std::bind(&AntennaController::new_rover_pos_callback, this, std::placeholders::_1),
+                std::bind(&AntennaPID::new_rover_pos_callback, this, std::placeholders::_1),
                 sub_options
             );
 
@@ -160,7 +160,7 @@ class AntennaPID : public rclcpp::Node
             
             timer_ = this->create_wall_timer(
                 std::chrono::milliseconds(20),
-                std::bind(&AntennaController::send_msg, this),
+                std::bind(&AntennaPID::send_msg, this),
                 cb_group_timer_   
             );
             
