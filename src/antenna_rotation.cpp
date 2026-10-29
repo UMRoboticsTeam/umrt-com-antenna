@@ -1,6 +1,6 @@
 #include "rclcpp/rclcpp.hpp"
 #include "std_msgs/msg/float64.hpp"
-#include "sensor_msgs/msg/nav_sat_fix.hpp""
+#include "sensor_msgs/msg/nav_sat_fix.hpp"
 
 #include <iostream>
 #include <string>
@@ -11,7 +11,7 @@
 #include <atomic>
 
 
-class AntennaController : public rclcpp::Node
+class AntennaPID : public rclcpp::Node
 {
     private:
         /*********************************************************************************************/
@@ -32,8 +32,8 @@ class AntennaController : public rclcpp::Node
         rclcpp::TimerBase::SharedPtr timer_;
         rclcpp::Publisher<std_msgs::msg::Float64>::SharedPtr pub_motor;
         rclcpp::Subscription<std_msgs::msg::Float64>::SharedPtr sub_bs;
-        rclcpp::Subscription<sensor_msgs::msg:NavSatFix>::SharedPtr sub_antenna_pos;
-        rclcpp::Subscription<sensor_msgs::msg:NavSatFix>::SharedPtr sub_rover_pos;
+        rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr sub_antenna_pos;
+        rclcpp::Subscription<sensor_msgs::msg::NavSatFix>::SharedPtr sub_rover_pos;
         
         /*********************************************************************************************/
         // FUNCTIONS
@@ -59,7 +59,7 @@ class AntennaController : public rclcpp::Node
             this->lastRoverLon = msg->longitude;
             this->lastRoverLat = msg->latitude;
             
-            if (this->lastAntenanLon == -9999 || this->lastAntenanLat == -9999 || this->lastRoverLon == -9999 || this->lastRoverLat == -9999)
+            if (this->lastAntennaLon == -9999 || this->lastAntennaLat == -9999 || this->lastRoverLon == -9999 || this->lastRoverLat == -9999)
             {
                 return;
             }
@@ -68,10 +68,10 @@ class AntennaController : public rclcpp::Node
         }
         
         void new_antenna_pos_callback(const sensor_msgs::msg::NavSatFix::SharedPtr msg) {
-            this->lastAntenanLon = msg->longitude;
-            this->lastAntenanLat = msg->latitude;
+            this->lastAntennaLon = msg->longitude;
+            this->lastAntennaLat = msg->latitude;
             
-            if (this->lastAntenanLon == -9999 || this->lastAntenanLat == -9999 || this->lastRoverLon == -9999 || this->lastRoverLat == -9999)
+            if (this->lastAntennaLon == -9999 || this->lastAntennaLat == -9999 || this->lastRoverLon == -9999 || this->lastRoverLat == -9999)
             {
                 return;
             }
@@ -124,7 +124,7 @@ class AntennaController : public rclcpp::Node
          * 
          * Builds a new antenna controller and setups the required variables
          */
-        AntennaController() : Node("antenna")
+        AntennaPID() : Node("antenna")
         { 
         
             cb_group_subscribers_ = this->create_callback_group(rclcpp::CallbackGroupType::Reentrant);
@@ -155,28 +155,29 @@ class AntennaController : public rclcpp::Node
 
             pub_motor =  this->create_publisher<std_msgs::msg::Float64>(
                 "/motor_cmd",
-                10);
+                10
+            );
             
             timer_ = this->create_wall_timer(
-                                        std::chrono::milisecond(20),
-                                        std::bind(&AntennaContoller::send_msg, this),
-                                        cb_group_timer_   
-                                );
+                std::chrono::milliseconds(20),
+                std::bind(&AntennaController::send_msg, this),
+                cb_group_timer_   
+            );
             
         }
 };
 
 /*
  * main
- *  The following code starts the the Antenna Controller
+ *  The following code starts the Antenna Controller
  */
 
 int main(int argc, char * argv[])
 {
     rclcpp::init(argc, argv);
-    auto node = std::make_shared<AntennaController>())
+    auto node = std::make_shared<AntennaPID>();
     
-    rclcpp::executor::MultiThreadedExecutor executor;
+    rclcpp::executors::MultiThreadedExecutor executor;
     
     executor.add_node(node);
     executor.spin();
