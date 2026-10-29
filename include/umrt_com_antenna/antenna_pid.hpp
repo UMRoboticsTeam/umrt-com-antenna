@@ -19,10 +19,10 @@ class AntennaPID : public rclcpp::Node
 {
 public:
 /*
-* AntennaController
-*  The constructor for the antenna controller class
+* AntennaPID
+*  The constructor for the antenna PID class
 * 
-* Builds a new antenna controller and setups the required variables
+* Builds a new antenna PID and setups the required variables
 */
   AntennaPID() : Node("antenna")
   { 
@@ -147,21 +147,30 @@ private:
   * 	@RETURN: DOUBLE - RECOMMENDED ANGLE TO ROTATE TO (USING NORTH AS 0)
   */ 
 
-  const double rotation_based_on_cord(const double &lon2, const double &lat2, const double &lon1, const double &lat1)
+  //ARRANGED FOR BETTER READABILITY AND PERFORMANCE (i think)
+  double rotation_based_on_cord(const double &lon2, const double &lat2, const double &lon1, const double &lat1)
   {
-    //CALCULATING X AND Y POSTIONS 
-    const double diff_lon = (lon1 * std::numbers::pi / 180) - (lon2 * std::numbers::pi / 180);
-    const double y = std::sin(diff_lon) * std::cos((lat1 * std::numbers::pi / 180));
-    const double x = std::cos((lat2 * std::numbers::pi / 180)) * std::sin((lat1 * std::numbers::pi / 180)) - std::sin((lat2 * std::numbers::pi / 180)) * std::cos((lat1 * std::numbers::pi / 180)) * std::cos(diff_lon);
-    
-    //FIND ANGLE IN RADIANS
-    const double theta_rad = std::atan2(y,x);
+      //CONVERSION FACTOR FROM DEGREES TO RADIANS
+      constexpr double deg_to_rad = std::numbers::pi / 180.0;
 
-    //DEBUG LINE
+      //CONVERTING LON AND LAT FROM DEGREES TO RADIANS
+      const double Rlon1 = lon1 * deg_to_rad;
+      const double Rlat1 = lat1 * deg_to_rad;
+      const double Rlon2 = lon2 * deg_to_rad;
+      const double Rlat2 = lat2 * deg_to_rad;
+
+    //CALCULATING THE DIFFERENCE IN LONGITUDE 1 and 2
+    const double diff_lon = (Rlon1 - Rlon2) * deg_to_rad;
+
+      //CALCULATING X AND Y POSTIONS
+    const double y = std::sin(diff_lon) * std::cos(Rlat1);
+    const double x = (std::cos(Rlat2) * std::sin(Rlat1)) - (std::sin(Rlat2) * std::cos(Rlat1) * std::cos(diff_lon));
+
+    //DEBUG LINE (this line was commented for the original code, but I will leave it here for reference)
       //std::cout << "X: " << x << " Y: " << y << " DIFF LON: " << diff_lon << std::endl;
 
-    //CONVERING RADIANS TO DEGRESS AND THEN RETURNING IT
-    return  theta_rad;
+    //RETURNS THE ANGLE IN RADIANS
+    return  std::atan2(y, x);
   }
   
   void send_msg() 
