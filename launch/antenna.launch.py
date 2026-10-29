@@ -24,7 +24,7 @@ def generate_launch_description():
         name='antenna_rotation',
         output='screen'
     )
-    
+    '''
     pid_node = Node(
         package='controller_manager',
         executable='spawner',
@@ -34,5 +34,5 @@ def generate_launch_description():
         ],
         output='screen'
     )
-
-    return LaunchDescription([switch_node, imu_node, pid_node, antenna_node])
+    '''
+    return LaunchDescription([switch_node, imu_node, antenna_node]) # removed pid_node for now
