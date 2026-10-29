@@ -5,9 +5,8 @@ if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
 endif()
 
-if(NOT CMAKE_CXX_STANDARD)
-  set(CMAKE_CXX_STANDARD 17)
-endif()
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
@@ -43,13 +42,12 @@ ament_target_dependencies(qmc5883p_node rclcpp std_msgs sensor_msgs)
 
 # --- antenna rotation --- #
 add_executable(antenna_rotation src/antenna_rotation.cpp)
-ament_target_dependencies(antenna_rotation rclcpp std_msgs)
+ament_target_dependencies(antenna_rotation rclcpp std_msgs sensor_msgs)
 
 install(TARGETS
   antenna_rotation
   switch_publisher_node
   qmc5883p_node
-  antenna_hardware
   DESTINATION lib/${PROJECT_NAME}
 )
 
