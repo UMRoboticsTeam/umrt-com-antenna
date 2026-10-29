@@ -52,7 +52,7 @@ class AntennaPID : public rclcpp::Node
         void bs_callback(const std_msgs::msg::Float64::SharedPtr msg)
         {
             this->lastOverrideReceived = std::chrono::system_clock::now().time_since_epoch().count();
-            this->heading = msg->data * deg_to_rad;
+            this->heading = msg->data * std::numbers::pi / 180;
         }
         
         void new_rover_pos_callback(const sensor_msgs::msg::NavSatFix::SharedPtr msg) {
@@ -96,16 +96,16 @@ class AntennaPID : public rclcpp::Node
         double rotation_based_on_cord(const double &lon2, const double &lat2, const double &lon1, const double &lat1)
         {
             //CONVERSION FACTOR FROM DEGREES TO RADIANS
-            constexpr double deg_to_rad = std::numbers::pi / 180.0;
+            constexpr double convert = std::numbers::pi / 180.0;
 
             //CONVERTING LON AND LAT FROM DEGREES TO RADIANS
-            const double Rlon1 = lon1 * deg_to_rad;
-            const double Rlat1 = lat1 * deg_to_rad;
-            const double Rlon2 = lon2 * deg_to_rad;
-            const double Rlat2 = lat2 * deg_to_rad;
+            const double Rlon1 = lon1 * convert;
+            const double Rlat1 = lat1 * convert;
+            const double Rlon2 = lon2 * convert;
+            const double Rlat2 = lat2 * convert;
 
 	        //CALCULATING THE DIFFERENCE IN LONGITUDE 1 and 2
-	        const double diff_lon = (Rlon1 - Rlon2) * deg_to_rad;
+	        const double diff_lon = (Rlon1 - Rlon2) * convert;
 
             //CALCULATING X AND Y POSTIONS
 	        const double y = std::sin(diff_lon) * std::cos(Rlat1);
