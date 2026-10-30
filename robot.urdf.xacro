@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org" name="antenna_tracker">
+
+  <!-- Virtual physical tracking link -->
+  <link name="base_link"/>
+  <link name="antenna_link"/>
+
+  <joint name="antenna_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="antenna_link"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- ros2_control Hardware Interface Map -->
+  <ros2_control name="AntennaSystem" type="system">
+    <hardware>
+      <plugin>umrt_com_antenna/AntennaHardware</plugin>
+    </hardware>
+    <joint name="antenna_joint">
+      <command_interface name="velocity">
+        <param name="min">-1.0</param>
+        <param name="max">1.0</param>
+      </command_interface>
+      <state_interface name="position"/>
+    </joint>
+  </ros2_control>
+
+</robot>

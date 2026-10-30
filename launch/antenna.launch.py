@@ -17,5 +17,22 @@ def generate_launch_description():
         output='screen',
         parameters=[{'i2c_bus': '/dev/i2c-1'}],
     )
-
-    return LaunchDescription([switch_node, imu_node])
+    
+    antenna_node = Node(
+        package='umrt_com_antenna',
+        executable='antenna_rotation',
+        name='antenna_rotation',
+        output='screen'
+    )
+    '''
+    pid_node = Node(
+        package='controller_manager',
+        executable='spawner',
+        argument=['joint_pid_controller'],
+        remappings=[
+                ('~/reference', '/input')
+        ],
+        output='screen'
+    )
+    '''
+    return LaunchDescription([switch_node, imu_node, antenna_node]) # removed pid_node for now
