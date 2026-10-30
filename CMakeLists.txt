@@ -41,11 +41,14 @@ add_executable(qmc5883p_node
 ament_target_dependencies(qmc5883p_node rclcpp std_msgs sensor_msgs)
 
 # --- antenna rotation --- #
-add_executable(antenna_rotation src/antenna_rotation.cpp)
-ament_target_dependencies(antenna_rotation rclcpp std_msgs sensor_msgs)
+add_executable(antenna_math_node 
+  src/antenna_math_node.cpp
+  src/antenna_math_main.cpp
+)
+ament_target_dependencies(antenna_math_node rclcpp std_msgs sensor_msgs)
 
 install(TARGETS
-  antenna_rotation
+  antenna_math_node
   switch_publisher_node
   qmc5883p_node
   DESTINATION lib/${PROJECT_NAME}
